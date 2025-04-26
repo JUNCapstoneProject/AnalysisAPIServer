@@ -1,5 +1,5 @@
 # 1단계: 빌드 단계 (Maven + JDK 21)
-FROM maven:4.0.0-eclipse-temurin-21 AS builder
+FROM maven:3.9.6-eclipse-temurin-21 AS builder
 
 # 프로젝트 복사 및 빌드
 COPY . /app
