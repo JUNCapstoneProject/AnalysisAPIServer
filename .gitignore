@@ -68,7 +68,6 @@ gradlew.bat
 # -------------------------------
 # Application configuration
 # -------------------------------
-application.properties
 application.yml
 
 # -------------------------------
