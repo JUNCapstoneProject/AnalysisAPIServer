@@ -77,3 +77,4 @@ application.yml
 *.tmp
 *.swp
 *~
+.env
