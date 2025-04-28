@@ -1,40 +1,72 @@
 package com.AnalysisAPIserver.domain.auth.jwt;
 
-
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.stereotype.Component;
-
 import java.security.Key;
 import java.util.Date;
+import org.springframework.stereotype.Component;
 
+/**
+ * JWT 생성 및 검증 유틸 클래스이다.
+ */
 @Component
-public class JwtProvider {
+public final class JwtProvider {
 
+    /**
+     * JWT 서명 키.
+     */
     private final Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-    private final long EXPIRATION = 1000 * 60 * 60 * 24; // 24시간
 
-    public String generateToken(String email) {
+    /**
+     * 토큰 만료 시간 (24시간).
+     */
+    private static final long EXPIRATION = 1000 * 60 * 60 * 24;
+
+    /**
+     * 토큰을 생성한다.
+     *
+     * @param email 사용자 이메일
+     * @return 생성된 토큰
+     */
+    public String generateToken(final String email) {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(key)
+                .setExpiration(new Date(System.currentTimeMillis()
+                        + EXPIRATION))
+                .signWith(this.key)
                 .compact();
     }
 
-    public String getEmailFromToken(String token) {
+    /**
+     * 토큰에서 이메일을 추출한다.
+     *
+     * @param token 토큰
+     * @return 이메일
+     */
+    public String getEmailFromToken(final String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(this.key)
                 .build()
                 .parseClaimsJws(token)
                 .getBody()
                 .getSubject();
     }
 
-    public boolean validateToken(String token) {
+    /**
+     * 토큰의 유효성을 검증한다.
+     *
+     * @param token 토큰
+     * @return 유효 여부
+     */
+    public boolean validateToken(final String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder()
+                    .setSigningKey(this.key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             return false;

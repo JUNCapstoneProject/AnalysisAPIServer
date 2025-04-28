@@ -1,15 +1,25 @@
 package com.AnalysisAPIserver.domain.client.exception;
 
-
-
 import lombok.Getter;
 
+/**
+ * 클라이언트 예외 클래스이다.
+ */
 @Getter
-public class ClientException extends RuntimeException {
+public final class ClientException extends RuntimeException {
+
+    /**
+     * 에러 코드.
+     */
     private final ClientErrorCode errorCode;
 
-    public ClientException(ClientErrorCode errorCode) {
-        super(errorCode.getMessage());
-        this.errorCode = errorCode;
+    /**
+     * ClientException 생성자.
+     *
+     * @param errorCodeParam 에러 코드
+     */
+    public ClientException(final ClientErrorCode errorCodeParam) {
+        super(errorCodeParam.getMessage());
+        this.errorCode = errorCodeParam;
     }
 }

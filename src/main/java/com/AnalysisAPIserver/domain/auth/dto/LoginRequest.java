@@ -1,13 +1,20 @@
 package com.AnalysisAPIserver.domain.auth.dto;
 
-
-
-
 import lombok.Data;
 
-
+/**
+ * 로그인 요청 DTO이다.
+ */
 @Data
-public class LoginRequest {
+public final class LoginRequest {
+
+    /**
+     * 사용자 이메일.
+     */
     private String email;
+
+    /**
+     * 사용자 비밀번호.
+     */
     private String password;
 }

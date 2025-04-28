@@ -1,14 +1,16 @@
 package com.AnalysisAPIserver.domain.auth.exception;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.stereotype.Component;
-
-import java.io.IOException;
+/**
+ * 인증 실패 예외이다.
+ */
 public class AuthException extends RuntimeException {
-    public AuthException(String message) {
+
+    /**
+     * 생성자.
+     *
+     * @param message 예외 메시지
+     */
+    public AuthException(final String message) {
         super(message);
     }
 }
