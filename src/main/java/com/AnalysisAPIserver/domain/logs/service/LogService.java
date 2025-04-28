@@ -36,10 +36,10 @@ public class LogService {
         }
 
         ApiLog log = ApiLog.builder()
-                .clientId(request.getClientId())
-                .endpoint(request.getEndpoint())
-                .method(request.getMethod())
-                .timestamp(request.getTimestamp())
+                .clientIdParam(request.getClientId())
+                .endpointParam(request.getEndpoint())
+                .methodParam(request.getMethod())
+                .timestampParam(request.getTimestamp())
                 .build();
 
         this.logRepository.save(log);
