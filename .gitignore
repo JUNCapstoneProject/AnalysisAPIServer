@@ -69,6 +69,7 @@ gradlew.bat
 # Application configuration
 # -------------------------------
 application.yml
+application.properties
 
 # -------------------------------
 # 기타 백업파일
