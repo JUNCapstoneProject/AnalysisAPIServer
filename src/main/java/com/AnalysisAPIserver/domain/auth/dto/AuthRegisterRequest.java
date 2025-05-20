@@ -16,8 +16,4 @@ public class AuthRegisterRequest {
      */
     private String accessToken;
 
-    /**
-     * 사용자 이름.
-     */
-    private String userName;
 }

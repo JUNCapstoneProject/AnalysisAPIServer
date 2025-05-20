@@ -49,6 +49,6 @@ public class AuthRegisterResponse {
         /**
          * 개발자 ID.
          */
-        private Long developerId;
+        private long developerId;
     }
 }
