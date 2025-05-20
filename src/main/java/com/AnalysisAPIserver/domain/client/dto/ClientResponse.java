@@ -1,31 +1,31 @@
 package com.AnalysisAPIserver.domain.client.dto;
 
-import com.AnalysisAPIserver.domain.client.entity.Client;
 import lombok.Getter;
 
 /**
- * 클라이언트 조회 응답 DTO이다.
+ * 클라이언트 관련 작업 (예: 이름 변경) 후 응답으로 사용되는 DTO입니다.
+ * 클라이언트 ID와 앱 이름을 포함합니다.
  */
 @Getter
-public final class ClientResponse {
-
+public class ClientResponse {
     /**
-     * 클라이언트 ID.
+     * 클라이언트의 고유 ID입니다.
      */
-    private final String clientId;
-
+    private String clientId;
     /**
-     * 클라이언트 이름.
+     * 클라이언트(애플리케이션)의 이름입니다.
      */
-    private final String name;
+    private String appName;
 
     /**
-     * 생성자.
+     * ClientResponse 객체를 생성합니다.
      *
-     * @param client 클라이언트 엔티티
+     * @param clientIdParam 클라이언트 ID
+     * @param appNameParam  애플리케이션 이름
      */
-    public ClientResponse(final Client client) {
-        this.clientId = client.getClientId();
-        this.name = client.getName();
+    public
+    ClientResponse(final String clientIdParam, final String appNameParam) {
+        this.clientId = clientIdParam;
+        this.appName = appNameParam;
     }
 }

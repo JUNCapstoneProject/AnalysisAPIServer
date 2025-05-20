@@ -1,130 +1,145 @@
 package com.AnalysisAPIserver.domain.auth.service;
 
-import com.AnalysisAPIserver.common.security.JwtUtil;
-import com.AnalysisAPIserver.domain.auth.dto.ClientIdResponse;
-import com.AnalysisAPIserver.domain.auth.dto.LoginRequest;
-import com.AnalysisAPIserver.domain.auth.dto.LoginResponse;
-import com.AnalysisAPIserver.domain.auth.dto.RegisterRequest;
-import com.AnalysisAPIserver.domain.auth.entity.ApiKey;
-import com.AnalysisAPIserver.domain.auth.entity.User;
-import com.AnalysisAPIserver.domain.auth.exception.AuthException;
+
+import com.AnalysisAPIserver.domain.auth.dto.AuthDeveloperInfoResponse;
+import com.AnalysisAPIserver.domain.auth.dto.AuthRegisterRequest;
+import com.AnalysisAPIserver.domain.DB_Table.entity.ApiUser;
 import com.AnalysisAPIserver.domain.auth.exception.UnauthorizedException;
-import com.AnalysisAPIserver.domain.auth.repository.ApiKeyRepository;
-import com.AnalysisAPIserver.domain.auth.repository.UserRepository;
-import java.util.UUID;
+import com.AnalysisAPIserver.domain.auth.jwt.JwtTokenProvider;
+import com.AnalysisAPIserver.domain.DB_Table.repository.ApiUserRepository;
+import java.time.LocalDateTime;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
+import org.springframework.transaction.annotation.Transactional;
 /**
- * 인증 서비스이다.
+ * 인증 관련 비즈니스 로직을 처리하는 서비스 클래스입니다.
+ * 개발자 등록, 정보 조회, 삭제 등의 기능을 제공합니다.
  */
 @Service
 @RequiredArgsConstructor
-public class AuthService {
+public class AuthService { // 클래스는 final로 선언
 
     /**
-     * 사용자 리포지토리.
+     * API 사용자 정보에 접근하기 위한 리포지토리입니다.
      */
-    private final UserRepository userRepository;
-
+    private final ApiUserRepository apiUserRepository;
     /**
-     * API 키 리포지토리.
+     * JWT 토큰 생성, 검증 및 클레임 추출을 담당하는 프로바이더입니다.
      */
-    private final ApiKeyRepository apiKeyRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     /**
-     * JWT 유틸.
-     */
-    private final JwtUtil jwtUtil;
-
-    /**
-     * 회원가입을 처리한다.
+     * 주어진 액세스 토큰을 사용하여 개발자가 존재하지 않으면 새로 등록합니다.
+     * 토큰이 유효하지 않으면 {@link IllegalArgumentException}을 발생시킵니다.
      *
-     * @param request 회원가입 요청
+     * @param accessToken 검증 및 사용자 정보 추출에 사용될 JWT 액세스 토큰.
      */
-    public void register(final RegisterRequest request) {
-        if (this.userRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new AuthException("이미 존재하는 이메일입니다.");
+    @Transactional
+    public void registerIfNotExists(final String accessToken) {
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new IllegalArgumentException(
+                    "Invalid JWT token.");
         }
-        User user = new User(request.getEmail(), request.getPassword());
-        this.userRepository.save(user);
+
+        Long developerId = jwtTokenProvider.getDeveloperId(accessToken);
+        if (!apiUserRepository.existsById(developerId)) {
+            ApiUser apiUser = ApiUser.builder()
+                    .developerId(developerId)
+                    .userName(jwtTokenProvider.getUserName(accessToken))
+                    .userType("개발자")
+                    .createdAt(LocalDateTime.now())
+                    .build();
+            apiUserRepository.save(apiUser);
+        }
     }
 
     /**
-     * 로그인 요청을 처리한다.
+     * 주어진 액세스 토큰을 사용하여 개발자 정보를 조회합니다.
+     * 토큰이 유효하지 않거나 등록되지 않은 개발자인 경우 {@link UnauthorizedException}을 발생시킵니다.
      *
-     * @param request 로그인 요청
-     * @return 로그인 응답
+     * @param accessToken 개발자 정보 조회에 사용될 JWT 액세스 토큰.
+     * @return 조회된 개발자 정보를 담은 {@link AuthDeveloperInfoResponse} 객체.
      */
-    public LoginResponse login(final LoginRequest request) {
-        User user = this.userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UnauthorizedException("유저를 찾을 수 없습니다."));
-
-        if (!user.getPassword().equals(request.getPassword())) {
-            throw new UnauthorizedException("비밀번호가 일치하지 않습니다.");
+    @Transactional(readOnly = true)
+    public
+    AuthDeveloperInfoResponse getDeveloperInfo(final String accessToken) {
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new UnauthorizedException("유효하지 않은 JWT 토큰입니다.");
         }
 
-        String token = this.jwtUtil.generateToken(user.getEmail());
-        return new LoginResponse(token);
+        Long developerId = jwtTokenProvider.getDeveloperId(accessToken);
+        ApiUser user = apiUserRepository.findById(developerId)
+                .orElseThrow(()
+                        -> new UnauthorizedException("등록되지 않은 개발자입니다."));
+
+        AuthDeveloperInfoResponse.User userDto
+                = new AuthDeveloperInfoResponse.User(
+                user.getUserName(),
+                user.getUserType(),
+                user.getCreatedAt().toLocalDate()
+        );
+
+        return AuthDeveloperInfoResponse.builder()
+                .user(userDto)
+                .build();
     }
 
     /**
-     * 이메일로 Client ID를 발급한다.
+     * 주어진 액세스 토큰과 개발자 ID를 사용하여 개발자 정보를 삭제합니다.
+     * 토큰이 유효하지 않거나, 토큰의 개발자 ID와 요청된 개발자 ID가 일치하지 않거나,
+     * 존재하지 않는 개발자인 경우 {@link UnauthorizedException} 또는
+     * {@link IllegalArgumentException}을 발생시킵니다.
      *
-     * @param email 이메일
-     * @return 발급된 Client ID
+     * @param accessToken 개발자 삭제 권한 검증에 사용될 JWT 액세스 토큰.
+     * @param developerId 삭제할 개발자의 ID.
      */
-    public String issueClientIdByEmail(final String email) {
-        User user = this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new AuthException("유저를 찾을 수 없습니다."));
-
-        if (user.getApiKey() != null) {
-            throw new AuthException("이미 API 키가 발급되어 있습니다.");
+    @Transactional
+    public void deleteDeveloper(final String accessToken,
+                                final Long developerId) { // FinalParameters 적용
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new UnauthorizedException("유효하지 않은 JWT 토큰입니다.");
         }
 
-        String clientId = UUID.randomUUID().toString();
-        String clientSecret = UUID.randomUUID().toString();
+        Long tokenDeveloperId = jwtTokenProvider.getDeveloperId(accessToken);
+        if (!tokenDeveloperId.equals(developerId)) {
+            throw new UnauthorizedException("본인의 계정만 삭제할 수 있습니다.");
+        }
 
-        ApiKey apiKey = new ApiKey();
-        apiKey.setClientId(clientId);
-        apiKey.setClientSecret(clientSecret);
-        apiKey.setUser(user);
+        ApiUser user = apiUserRepository.findById(developerId)
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "존재하지 않는 개발자입니다.")); // LineLength 해결
 
-        this.apiKeyRepository.save(apiKey);
-        return clientId;
+        apiUserRepository.delete(user);
     }
 
     /**
-     * 이메일로 Client ID 정보를 조회한다.
+     * 주어진 {@link AuthRegisterRequest}의 액세스 토큰을 사용하여 개발자를 등록하거나
+     * 이미 등록된 경우 해당 개발자의 ID를 반환합니다.
+     * 토큰이 유효하지 않으면 {@link UnauthorizedException}을 발생시킵니다.
      *
-     * @param email 이메일
-     * @return Client ID 응답
+     * @param request 개발자 등록 요청 정보를 담은 객체. 액세스 토큰을 포함합니다.
+     * @return 등록되거나 조회된 개발자의 ID.
      */
-    public ClientIdResponse getClientId(final String email) {
-        User user = this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new AuthException("유저를 찾을 수 없습니다."));
+    @Transactional
+    public Long registerDeveloper(final AuthRegisterRequest request) {
+        String accessToken = request.getAccessToken();
 
-        ApiKey apiKey = user.getApiKey();
-        if (apiKey == null) {
-            throw new AuthException("발급된 API 키가 없습니다.");
+        if (!jwtTokenProvider.validateToken(accessToken)) {
+            throw new UnauthorizedException("유효하지 않은 JWT 토큰입니다.");
         }
 
-        return new ClientIdResponse(apiKey.getClientId(),
-                apiKey.getClientSecret());
-    }
+        String userName = jwtTokenProvider.getUserName(accessToken);
 
-    /**
-     * 이메일로 Client ID를 삭제한다.
-     *
-     * @param email 이메일
-     */
-    public void deleteClientId(final String email) {
-        User user = this.userRepository.findByEmail(email)
-                .orElseThrow(() -> new AuthException("유저를 찾을 수 없습니다."));
-
-        ApiKey apiKey = user.getApiKey();
-        if (apiKey != null) {
-            this.apiKeyRepository.delete(apiKey);
-        }
+        return apiUserRepository.findByUserName(userName)
+                .map(ApiUser::getDeveloperId)
+                .orElseGet(() -> {
+                    ApiUser newUser = ApiUser.builder()
+                            .userName(userName)
+                            .userType("개발자")
+                            .build();
+                    ApiUser saved = apiUserRepository.save(newUser);
+                    return saved.getDeveloperId();
+                });
     }
 }

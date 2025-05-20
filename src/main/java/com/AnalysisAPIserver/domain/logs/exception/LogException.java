@@ -8,7 +8,7 @@ public final class LogException extends RuntimeException {
     /**
      * 생성자.
      *
-     * @param message 예외 메시지
+     * @param message 예외 메시지.
      */
     public LogException(final String message) {
         super(message);

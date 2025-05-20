@@ -1,6 +1,5 @@
 package com.AnalysisAPIserver.config;
 
-import com.AnalysisAPIserver.common.security.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,7 +8,6 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 /**
  * 스프링 시큐리티 설정 클래스이다.
@@ -17,11 +15,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
-
-    /**
-     * JWT 인증 필터.
-     */
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     /**
      * SecurityFilterChain을 설정한다.
@@ -44,10 +37,11 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/api-docs/**"
                         ).permitAll()
-                        .anyRequest().authenticated())
-                .addFilterBefore(
+                        .anyRequest().permitAll() // 임시로 모두 허용
+                )
+                /*.addFilterBefore(
                         this.jwtAuthenticationFilter,
-                        UsernamePasswordAuthenticationFilter.class)
+                        UsernamePasswordAuthenticationFilter.class)*/
                 .build();
     }
 

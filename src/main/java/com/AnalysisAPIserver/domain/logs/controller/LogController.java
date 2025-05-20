@@ -1,52 +1,66 @@
 package com.AnalysisAPIserver.domain.logs.controller;
 
-import com.AnalysisAPIserver.domain.logs.dto.ApiLogRequest;
-import com.AnalysisAPIserver.domain.logs.dto.ApiLogResponse;
-import com.AnalysisAPIserver.domain.logs.service.LogService;
+import com.AnalysisAPIserver.domain.DB_Table.entity.ApiStatics;
+import com.AnalysisAPIserver.domain.DB_Table.entity.ApiUser;
+import com.AnalysisAPIserver.domain.DB_Table.entity.Application;
+import com.AnalysisAPIserver.domain.DB_Table.repository.ApiStaticsRepository;
+import com.AnalysisAPIserver.domain.DB_Table.repository.ApplicationRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * 로그 관련 컨트롤러이다.
- */
+
+import java.util.List;
+import java.util.Optional;
+
 @RestController
-@RequestMapping("/api/logs")
+@RequestMapping("/api/statistics")
 @RequiredArgsConstructor
-public final class LogController {
+public class LogController {
 
     /**
-     * 로그 서비스.
+     * 애플리케이션 정보에 접근하기 위한 리포지토리.
      */
-    private final LogService logService;
+    private final ApplicationRepository applicationRepository;
+    /**
+     * API 통계 정보에 접근하기 위한 리포지토리.
+     */
+    private final ApiStaticsRepository apiStaticsRepository;
 
     /**
-     * API 사용 기록을 저장한다.
+     * 특정 개발자의 API 통계 정보를 조회합니다.
+     * 이 메소드는 확장될 수 있지만, 현재 로직은 유지되어야 합니다.
      *
-     * @param request API 로그 요청
-     * @return 성공 메시지
+     * @param developerId 통계를 조회할 개발자 ID.
+     * @param request HTTP 요청 객체.
+     * @return API 통계 응답 또는 오류 메시지.
      */
-    @PostMapping
-    public ResponseEntity<String> saveApiLog(
-            @RequestBody final ApiLogRequest request) {
-        this.logService.saveApiLog(request);
-        return ResponseEntity.ok("API 사용 기록 저장 완료");
-    }
+    @GetMapping("/{developerId}")
+    public ResponseEntity<?> getDeveloperStatistics(
+            @PathVariable final Long developerId, // FinalParameters 적용
+            final HttpServletRequest request) { // FinalParameters 적용
+        String clientId = request.getHeader("client_id");
 
-    /**
-     * 클라이언트 ID로 API 사용 기록을 조회한다.
-     *
-     * @param clientId 클라이언트 ID
-     * @return API 로그 응답
-     */
-    @GetMapping
-    public ResponseEntity<ApiLogResponse> getDeveloperLogs(
-            @RequestParam final String clientId) {
-        return ResponseEntity.ok(this.logService.getDeveloperLogs(clientId));
+
+        Optional<Application> appOpt = applicationRepository.findByClientId(
+                clientId); // LineLength 해결
+        if (appOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+                    "Invalid client_id"); // LineLength 해결
+        }
+
+
+        ApiUser developer = appOpt.get().getOwner();
+
+
+        List<ApiStatics> staticsList = apiStaticsRepository.findByDeveloper(
+                developer); // LineLength 해결
+
+        return ResponseEntity.ok(staticsList);
     }
 }
