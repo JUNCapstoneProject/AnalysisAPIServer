@@ -1,5 +1,6 @@
 package com.AnalysisAPIserver.domain.auth.jwt;
 
+import com.AnalysisAPIserver.domain.auth.exception.UnauthorizedException;
 import com.AnalysisAPIserver.domain.auth.service.AuthService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -7,7 +8,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 /**
@@ -19,7 +23,12 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public final class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     /**
-     * JWT 토큰을 생성하고 검증하는 프로바이더입니다.
+     * 로깅을 위한 Logger 객체입니다.
+     */
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+    /**
+     * JWT 토큰 생성 및 검증을 담당하는 Provider입니다.
      */
     private final JwtTokenProvider jwtTokenProvider;
     /**
@@ -28,33 +37,45 @@ public final class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final AuthService authService;
 
     /**
-     * "Bearer " 접두사의 길이.
+     * HTTP 요청 헤더에서 인증 정보를 나타내는 헤더 이름입니다.
      */
-    private static final int BEARER_TOKEN_PREFIX_LENGTH = 7;
-
+    private static final String AUTHORIZATION_HEADER = "Authorization";
     /**
-     * 실제 필터링 로직을 수행합니다.
-     * HTTP 요청 헤더에서 Authorization 토큰을 추출하여 JWT 유효성 검사를 수행하고,
-     * 유효한 경우 해당 토큰을 사용하여 사용자를 인증합니다.
-     *
-     * @param request     HTTP 요청 객체.
-     * @param response    HTTP 응답 객체.
-     * @param filterChain 필터 체인 객체.
-     * @throws ServletException 서블릿 관련 예외 발생 시.
-     * @throws IOException      입출력 예외 발생 시.
+     * Bearer 토큰 인증 스킴을 나타내는 접두사입니다.
      */
+    private static final String BEARER_PREFIX = "Bearer ";
+
     @Override
     protected void doFilterInternal(final HttpServletRequest request,
                                     final HttpServletResponse response,
                                     final FilterChain filterChain)
             throws ServletException, IOException {
 
-        String bearerToken = request.getHeader("Authorization");
-        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-            String accessToken
-                    = bearerToken.substring(BEARER_TOKEN_PREFIX_LENGTH);
-            authService.registerIfNotExists(
-                    accessToken);
+        final String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
+        String pureAccessToken = null;
+
+        if (StringUtils.hasText(bearerToken)
+                && bearerToken.startsWith(BEARER_PREFIX)) {
+            pureAccessToken = bearerToken.substring(BEARER_PREFIX.length());
+        }
+
+        if (pureAccessToken != null) {
+            try {
+                authService.registerIfNotExists(pureAccessToken);
+                LOGGER.debug("JwtAuthenticationFilter: Token processed by "
+                                + "registerIfNotExists for request URI: {}",
+                        request.getRequestURI());
+            } catch (IllegalArgumentException | UnauthorizedException e) {
+                LOGGER.warn("JwtAuthenticationFilter:"
+                                + " Invalid token processed by "
+                                + "registerIfNotExists for URI: {}. Error: {}",
+                        request.getRequestURI(), e.getMessage());
+            }
+        } else {
+            LOGGER.trace("JwtAuthenticationFilter:"
+                            + " No JWT 'Bearer' token found in "
+                            + "request headers for URI: {}",
+                    request.getRequestURI());
         }
 
         filterChain.doFilter(request, response);
