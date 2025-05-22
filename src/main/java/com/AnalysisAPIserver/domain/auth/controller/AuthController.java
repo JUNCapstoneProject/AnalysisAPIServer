@@ -1,18 +1,24 @@
 package com.AnalysisAPIserver.domain.auth.controller;
 
-import com.AnalysisAPIserver.domain.auth.dto.ClientIdResponse;
-import com.AnalysisAPIserver.domain.auth.dto.LoginRequest;
-import com.AnalysisAPIserver.domain.auth.dto.LoginResponse;
-import com.AnalysisAPIserver.domain.auth.dto.MessageResponse;
-import com.AnalysisAPIserver.domain.auth.dto.RegisterRequest;
+import com.AnalysisAPIserver.domain.auth.dto.AuthDeveloperInfoResponse;
+import com.AnalysisAPIserver.domain.auth.dto.AuthRegisterRequest;
+import com.AnalysisAPIserver.domain.auth.dto.AuthRegisterResponse;
+import com.AnalysisAPIserver.domain.auth.dto.CommonResponse;
+import com.AnalysisAPIserver.domain.auth.exception.ResourceNotFoundException;
+import com.AnalysisAPIserver.domain.auth.exception.UnauthorizedException;
 import com.AnalysisAPIserver.domain.auth.service.AuthService;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -25,78 +31,146 @@ import org.springframework.web.bind.annotation.RestController;
 public final class AuthController {
 
     /**
-     * 인증 서비스.
+     * 로거 객체.
+     */
+    private static final Logger LOGGER
+            = LoggerFactory.getLogger(AuthController.class);
+    /**
+     * 인증 서비스 로직을 처리하는 서비스.
      */
     private final AuthService authService;
 
     /**
-     * 회원가입을 처리한다.
+     * 개발자 등록을 처리합니다.
      *
-     * @param request 회원가입 요청
-     * @return 성공 메시지
+     * @param request 등록 요청 정보
+     * @return 등록 결과 응답
      */
     @PostMapping("/register")
-    public ResponseEntity<MessageResponse> register(
-            @RequestBody final RegisterRequest request) {
-        this.authService.register(request);
-        return ResponseEntity.ok(new MessageResponse("회원가입 성공"));
+    public ResponseEntity<?> registerDeveloper(
+            final @RequestBody AuthRegisterRequest request) {
+        try {
+            Long developerId = authService.registerDeveloper(request);
+            return ResponseEntity.ok(
+                    new AuthRegisterResponse(
+                            true,
+                            new AuthRegisterResponse.ResponseBody(
+                                    new AuthRegisterResponse.User(developerId)
+                            ),
+                            null
+                    )
+            );
+        } catch (UnauthorizedException e) {
+            LOGGER.warn("/register - UnauthorizedException: {}",
+                    e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new AuthRegisterResponse(false,
+                            null, e.getMessage()));
+        } catch (Exception e) {
+            LOGGER.error("/register - Unexpected error: ", e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new AuthRegisterResponse(false, null,
+                            "서버 내부 오류가 발생했습니다."));
+        }
     }
 
     /**
-     * 로그인 요청을 처리한다.
+     * 특정 개발자 ID의 정보를 조회합니다.
+     * 요청자는 Authorization 헤더의 토큰을 통해 인증되어야 하며, 자신의 정보만 조회 가능합니다.
      *
-     * @param request 로그인 요청
-     * @return 로그인 응답
+     * @param developerId 조회할 개발자의 ID (URL 경로 변수).
+     * @param bearerToken 인증 토큰 ("Bearer " 접두사 포함).
+     * @return 개발자 정보 (userName은 이메일).
      */
-    @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(
-            @RequestBody final LoginRequest request) {
-        return ResponseEntity.ok(this.authService.login(request));
+    @GetMapping("/{developerId}")
+    public ResponseEntity<?> getDeveloperInfo(
+            @PathVariable final Long developerId,
+            final @RequestHeader("Authorization") String bearerToken) {
+        try {
+            AuthDeveloperInfoResponse response =
+                    authService.getDeveloperInfo(bearerToken, developerId);
+            return ResponseEntity.ok(
+                    new CommonResponse<>(true, response, null)
+            );
+        } catch (ResourceNotFoundException e) {
+            LOGGER.warn("/api/auth/{} - ResourceNotFoundException: {}",
+                    developerId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CommonResponse<>(false, null, e.getMessage()));
+        } catch (UnauthorizedException e) { // 토큰 문제 또는 권한 문제
+            LOGGER.warn("/api/auth/{} - UnauthorizedException: {}",
+                    developerId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new CommonResponse<>(false, null, e.getMessage()));
+        } catch (Exception e) {
+            LOGGER.error("/api/auth/{} - Unexpected error: ", developerId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CommonResponse<>(false, null,
+                            "서버에서 오류가 발생했습니다."));
+        }
     }
 
     /**
-     * Client ID 발급 요청을 처리한다.
+     * 개발자 정보를 삭제합니다.
      *
-     * @return 발급된 Client ID
+     * @param bearerToken 인증 토큰
+     * @param developerId 삭제할 개발자 ID
+     * @return 삭제 결과 응답
      */
-    @PostMapping("/client-id")
-    public ResponseEntity<MessageResponse> issueClientId() {
-        String email = getAuthenticatedEmail();
-        String result = this.authService.issueClientIdByEmail(email);
-        return ResponseEntity.ok(new MessageResponse(result));
+    @DeleteMapping("/{developerId}")
+    public ResponseEntity<CommonResponse<Void>> deleteDeveloper(
+            final @RequestHeader("Authorization") String bearerToken,
+            final @PathVariable Long developerId) {
+        try {
+            authService.deleteDeveloper(bearerToken, developerId);
+            return ResponseEntity.ok(
+                    new CommonResponse<>(true, null, null)
+            );
+        } catch (ResourceNotFoundException e) {
+            LOGGER.warn("/delete/{} - ResourceNotFoundException: {}",
+                    developerId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new CommonResponse<>(false, null, e.getMessage()));
+        } catch (UnauthorizedException e) {
+            LOGGER.warn("/delete/{} - UnauthorizedException: {}",
+                    developerId, e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new CommonResponse<>(false, null, e.getMessage()));
+        } catch (Exception e) {
+            LOGGER.error("/delete/{} - Unexpected error: ", developerId, e);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CommonResponse<>(false, null,
+                            "서버 내부 오류가 발생했습니다."));
+        }
     }
 
     /**
-     * Client ID 조회 요청을 처리한다.
+     * 로그인 상태를 확인합니다.
      *
-     * @return Client ID 정보
+     * @param bearerToken 인증 토큰
+     * @return 로그인 상태 확인 결과 응답
      */
-    @GetMapping("/client-id")
-    public ResponseEntity<ClientIdResponse> getClientId() {
-        String email = getAuthenticatedEmail();
-        return ResponseEntity.ok(this.authService.getClientId(email));
-    }
-
-    /**
-     * Client ID 삭제 요청을 처리한다.
-     *
-     * @return 삭제 성공 메시지
-     */
-    @DeleteMapping("/client-id")
-    public ResponseEntity<MessageResponse> deleteClientId() {
-        String email = getAuthenticatedEmail();
-        this.authService.deleteClientId(email);
-        return ResponseEntity.ok(new MessageResponse("Client ID 삭제 완료"));
-    }
-
-    /**
-     * 현재 인증된 사용자의 이메일을 가져온다.
-     *
-     * @return 이메일
-     */
-    private String getAuthenticatedEmail() {
-        return (String) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    @GetMapping("/check")
+    public ResponseEntity<?> checkLogin(
+            final @RequestHeader("Authorization") String bearerToken) {
+        try {
+            boolean isLoggedIn = authService.verifyLoginStatus(bearerToken);
+            return ResponseEntity.ok(
+                    new CommonResponse<>(true,
+                            Map.of("loggedIn", isLoggedIn), null)
+            );
+        } catch (UnauthorizedException e) {
+            LOGGER.warn("/check - UnauthorizedException: {}", e.getMessage());
+            String errorMessage = e.getMessage();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new CommonResponse<>(false, Map.of("loggedIn", false),
+                            errorMessage));
+        } catch (Exception e) {
+            LOGGER.error("/check - Unexpected error: ", e);
+            String serverErrorMessage = "서버에서 오류가 발생했습니다.";
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new CommonResponse<>(false, Map.of("loggedIn", false),
+                            serverErrorMessage));
+        }
     }
 }
