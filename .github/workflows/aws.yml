@@ -42,6 +42,12 @@ env:
   CONTAINER_NAME: AnalysisAPIServer              # set this to the name of the container in the
                                                  # containerDefinitions section of your task definition
 
+  # GitHub Secrets (환경 변수)
+  DB_URL: ${{ secrets.DB_URL }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
 permissions:
   contents: read
 
@@ -78,6 +84,19 @@ jobs:
         docker build -f Dockerfile -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+    - name: Update ECS task definition with environment variables
+      run: |
+        jq --arg DB_URL "$DB_URL" \
+           --arg DB_USER "$DB_USER" \
+           --arg DB_PASSWORD "$DB_PASSWORD" \
+           --arg JWT_SECRET "$JWT_SECRET" \
+           '(.containerDefinitions[] | select(.name == "AnalysisAPIServer") | .environment) += [
+             {"name": "DB_URL", "value": $DB_URL},
+             {"name": "DB_USER", "value": $DB_USER},
+             {"name": "DB_PASSWORD", "value": $DB_PASSWORD},
+             {"name": "JWT_SECRET", "value": $JWT_SECRET},
+           ]' "$ECS_TASK_DEFINITION" > ecs-task-definition-updated.json
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
