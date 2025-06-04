@@ -27,13 +27,10 @@
 name: Deploy to Amazon ECS
 
 on:
-  push:
-    branches:
-      - main
-  # workflow_run:
-  #   workflows: ["AnalysisAPIServer_CI"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["AnalysisAPIServer_CI"]
+    types:
+      - completed
 
 env:
   AWS_REGION: ap-northeast-2                     # set this to your preferred AWS region, e.g. us-west-1
@@ -44,6 +41,12 @@ env:
                                                  # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: AnalysisAPIServer              # set this to the name of the container in the
                                                  # containerDefinitions section of your task definition
+
+  # GitHub Secrets (환경 변수)
+  DB_URL: ${{ secrets.DB_URL }}
+  DB_USERNAME: ${{ secrets.DB_USERNAME }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
 permissions:
   contents: read
@@ -82,11 +85,24 @@ jobs:
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
+    - name: Update ECS task definition with environment variables
+      run: |
+        jq --arg DB_URL "$DB_URL" \
+           --arg DB_USERNAME "$DB_USERNAME" \
+           --arg DB_PASSWORD "$DB_PASSWORD" \
+           --arg JWT_SECRET "$JWT_SECRET" \
+           '(.containerDefinitions[] | select(.name == "AnalysisAPIServer") | .environment) += [
+             {"name": "DB_URL", "value": $DB_URL},
+             {"name": "DB_USERNAME", "value": $DB_USERNAME},
+             {"name": "DB_PASSWORD", "value": $DB_PASSWORD},
+             {"name": "JWT_SECRET", "value": $JWT_SECRET}
+           ]' "$ECS_TASK_DEFINITION" > ecs-task-definition-updated.json
+
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
-        task-definition: ${{ env.ECS_TASK_DEFINITION }}
+        task-definition: ecs-task-definition-updated.json
         container-name: ${{ env.CONTAINER_NAME }}
         image: ${{ steps.build-image.outputs.image }}
 
@@ -96,4 +112,4 @@ jobs:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
         service: ${{ env.ECS_SERVICE }}
         cluster: ${{ env.ECS_CLUSTER }}
-        wait-for-service-stability: true
+        # wait-for-service-stability: true
