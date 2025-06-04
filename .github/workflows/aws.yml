@@ -44,7 +44,7 @@ env:
 
   # GitHub Secrets (환경 변수)
   DB_URL: ${{ secrets.DB_URL }}
-  DB_USER: ${{ secrets.DB_USER }}
+  DB_USERNAME: ${{ secrets.DB_USERNAME }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
@@ -88,12 +88,12 @@ jobs:
     - name: Update ECS task definition with environment variables
       run: |
         jq --arg DB_URL "$DB_URL" \
-           --arg DB_USER "$DB_USER" \
+           --arg DB_USERNAME "$DB_USERNAME" \
            --arg DB_PASSWORD "$DB_PASSWORD" \
            --arg JWT_SECRET "$JWT_SECRET" \
            '(.containerDefinitions[] | select(.name == "AnalysisAPIServer") | .environment) += [
              {"name": "DB_URL", "value": $DB_URL},
-             {"name": "DB_USER", "value": $DB_USER},
+             {"name": "DB_USERNAME", "value": $DB_USERNAME},
              {"name": "DB_PASSWORD", "value": $DB_PASSWORD},
              {"name": "JWT_SECRET", "value": $JWT_SECRET}
            ]' "$ECS_TASK_DEFINITION" > ecs-task-definition-updated.json

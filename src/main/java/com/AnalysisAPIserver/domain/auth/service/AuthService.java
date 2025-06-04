@@ -180,6 +180,8 @@ public class AuthService { // DesignForExtension 해결을 위해 final 추가
      * 조회 권한이 없는 경우(본인 정보가 아님).
      * @throws ResourceNotFoundException 해당 pathDeveloperId의 사용자를 찾을 수 없는 경우.
      */
+
+
     @Transactional(readOnly = true)
     public AuthDeveloperInfoResponse
     getDeveloperInfo(final String bearerToken,
