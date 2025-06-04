@@ -40,7 +40,7 @@ public class SecurityConfig { // 클래스를 final로 선언
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api/auth/register",
-                                "/api/auth/login",
+                                "/api",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/api-docs/**"
@@ -74,8 +74,8 @@ public class SecurityConfig { // 클래스를 final로 선언
 
 
         configuration.setAllowedOrigins(List.of(
-                "http://localhost:5173",
-                "http://192.168.45.26:5173"
+                "https://developer.tuzain.com"
+
         ));
 
         configuration.setAllowedMethods(
