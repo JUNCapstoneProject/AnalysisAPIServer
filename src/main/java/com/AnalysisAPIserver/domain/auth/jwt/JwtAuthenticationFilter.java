@@ -45,11 +45,29 @@ public final class JwtAuthenticationFilter extends OncePerRequestFilter {
      */
     private static final String BEARER_PREFIX = "Bearer ";
 
+    /**
+     * JWT 인증 필터가 적용될 경로입니다.
+     */
+    private static final String TARGET_PATH_PREFIX = "/api/auth/";
+
     @Override
     protected void doFilterInternal(final HttpServletRequest request,
                                     final HttpServletResponse response,
                                     final FilterChain filterChain)
             throws ServletException, IOException {
+
+        final String requestUri = request.getRequestURI();
+
+
+        if (!requestUri.startsWith(TARGET_PATH_PREFIX)) {
+            LOGGER.trace("JwtAuthenticationFilter:"
+                    + " Skipping filter for URI: {}", requestUri);
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        LOGGER.debug("JwtAuthenticationFilter: "
+                + "Processing request for URI: {}", requestUri);
 
         final String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
         String pureAccessToken = null;
@@ -61,21 +79,24 @@ public final class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (pureAccessToken != null) {
             try {
+                // jwtTokenProvider.validateToken(pureAccessToken);
                 authService.registerIfNotExists(pureAccessToken);
                 LOGGER.debug("JwtAuthenticationFilter: Token processed by "
                                 + "registerIfNotExists for request URI: {}",
-                        request.getRequestURI());
+                        requestUri);
             } catch (IllegalArgumentException | UnauthorizedException e) {
                 LOGGER.warn("JwtAuthenticationFilter:"
                                 + " Invalid token processed by "
                                 + "registerIfNotExists for URI: {}. Error: {}",
-                        request.getRequestURI(), e.getMessage());
+                        requestUri, e.getMessage());
+
             }
         } else {
             LOGGER.trace("JwtAuthenticationFilter:"
                             + " No JWT 'Bearer' token found in "
                             + "request headers for URI: {}",
-                    request.getRequestURI());
+                    requestUri);
+
         }
 
         filterChain.doFilter(request, response);
