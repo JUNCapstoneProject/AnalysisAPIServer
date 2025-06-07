@@ -32,4 +32,13 @@ public interface ApplicationRepository
      */
     List<Application> findAllByClientIdIn(List<String> clientIds);
 
+    /**
+     * 클라이언트 ID와 클라이언트 Secret으로 애플리케이션 정보를 조회합니다.
+     * @param clientId 클라이언트 ID
+     * @param clientSecret 클라이언트 Secret
+     * @return Optional<Application>
+     */
+    Optional<Application> findByClientIdAndClientSecret(String clientId,
+                                                        String clientSecret);
+
 }
