@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * analysis api 서버의 메인 애플리케이션 클래스이다.
+ * Analysis API 서버의 메인 애플리케이션 클래스이다.
  */
 @SpringBootApplication
 public final class AnalysisApiServerApplication {
