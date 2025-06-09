@@ -98,6 +98,7 @@ public class ClientService {
                 .clientSecret(clientSecret)
                 .appName(request.getAppName())
                 .callbackUrl(request.getCallbackUrl())
+
                 .build();
 
         applicationRepository.save(application);

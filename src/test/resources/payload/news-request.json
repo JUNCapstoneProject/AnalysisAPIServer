@@ -1,0 +1,189 @@
+{
+  "header": {
+    "Host": "api.tuzain.com",
+    "Origin": "https://developer.tuzain.com",
+    "Referer": "https://developer.tuzain.com/docs",
+    "Request URL": "https://api.tuzain.com/api/analysis/news/sentiment_classifier",
+    "RequestMethod": "POST",
+    "Authorization": "Bearer"
+  },
+  "body": {
+    "client_id": "937041b0-201e-4797-95cc-750655f288dc",
+    "client_secret": "75e50882-a51f-45dd-b9b5-d92fee0d0f7c",
+    "item": {
+      "event_type": "news",
+      "data": {
+        "news_data": [
+          "AppleAAPLwas the biggest firm by market cap to hit a new 52-week high.",
+          "Energy FocusEFOIwas the smallest company when considering market cap to set a new 52-week high",
+          "Dynagas LNG PartnersDLNGsaw the most pronounced positive move, as it traded up 22.16% to hit its new 52-week high.",
+          "AppleAAPLshares hit a yearly high of $328.00. The stock traded up 1.09% on the session.",
+          "Home DepotHDstock set a new 52-week high of $253.72 Friday morning. Over the session, the stock traded up 1.59%.",
+          "ASML HoldingASMLshares were up 2.07% on Friday morning to hit a new 52-week high of $363.60.",
+          "DanaherDHRstock hit a yearly high price of $172.40. The stock was up 1.59% for the day.",
+          "Raytheon TechnologiesRTXshares hit a new 52-week high of $72.97. The stock traded up 6.49% on the session.",
+          "JD.comJDshares hit a new 52-week high of $59.20. The stock traded up 2.9% on the session.",
+          "EcolabECLshares reached a new 52-week high of $228.26 on Friday morning, moving up 2.55%.",
+          "AutodeskADSKstock made a new 52-week high of $231.26 Friday. The stock was up 2.08% for the day.",
+          "PinduoduoPDDshares reached a new 52-week high of $73.00 on Friday morning, moving up 9.01%.",
+          "Analog DevicesADIshares were up 3.14% on Friday to hit a new 52-week high of $127.39 for a change of up 3.14%.",
+          "Roper TechnologiesROPshares were up 0.73% on Friday morning to hit a new 52-week high of $409.24.",
+          "TAL EducationTALshares were up 3.13% on Friday morning to hit a new 52-week high of $65.76.",
+          "Chunghwa TelecomCHTshares were up 0.69% on Friday to hit a new 52-week high of $38.15 for a change of up 0.69%.",
+          "Agilent TechnologiesAshares broke to a new 52-week high of $92.93 on Friday. Shares of the company traded up 0.93%.",
+          "SeaSEshares set a new 52-week high of $88.37 on Friday, moving up 2.24%.",
+          "KLAKLACstock on Friday broke to a yearly high of $196.15. Shares traded up 4.02%.",
+          "Fresenius Medical CareFMSshares achieved a new 52-week high on Friday morning, hitting $44.30 with a daily change of up 1.55%.",
+          "Otis WorldwideOTISstock on Friday broke to a yearly high of $57.98. Shares traded up 1.83%.",
+          "AmerisourceBergenABCshares hit $102.20 on Friday morning, setting a new 52-week high for a change of up 2.39%.",
+          "First Republic BankFRCshares reached a new 52-week high of $124.78 on Friday morning, moving up 3.25%.",
+          "Rockwell AutomationROKshares were up 3.21% for the day, having made a 52-week high of $230.54.",
+          "Skyworks SolutionsSWKSshares hit $133.97 on Friday morning, setting a new 52-week high for a change of up 3.93%.",
+          "Carrier GlobalCARRshares hit a yearly high of $24.36. The stock traded up 5.55% on the session.",
+          "EquifaxEFXshares achieved a new 52-week high on Friday morning, hitting $179.65 with a daily change of up 1.01%.",
+          "PerkinElmerPKIshares set a new yearly high of $104.95 this morning. The stock was up 1.63% on the session.",
+          "Ceridian HCM HoldingCDAYshares hit a new 52-week high of $79.93. The stock traded up 6.31% on the session.",
+          "FactSet Research SystemsFDSshares hit a yearly high of $317.66. The stock traded up 0.85% on the session.",
+          "Apollo Global ManagementAPOshares set a new yearly high of $53.82 this morning. The stock was up 4.29% on the session.",
+          "NordsonNDSNshares were up 3.56% on Friday morning to hit a new 52-week high of $199.15.",
+          "Monolithic Power SystemsMPWRshares were up 3.3% on Friday morning to hit a new 52-week high of $238.27.",
+          "RPM InternationalRPMshares hit a new 52-week high of $79.59. The stock traded up 1.77% on the session.",
+          "IPG PhotonicsIPGPshares hit a new 52-week high of $168.48. The stock traded up 3.98% on the session.",
+          "Reynolds ConsumerREYNshares achieved a new 52-week high on Friday morning, hitting $35.99 with a daily change of up 4.24%.",
+          "EntegrisENTGstock made a new 52-week high of $64.50 Friday. The stock was up 3.02% for the day.",
+          "Howmet AerospaceHWMshares hit $17.25 on Friday morning, setting a new 52-week high for a change of up 7.53%.",
+          "New York TimesNYTshares were up 1.99% on Friday morning to hit a new 52-week high of $41.61.",
+          "Deckers OutdoorDECKstock set a new 52-week high of $218.19 Friday morning. Over the session, the stock traded up 3.23%.",
+          "Clearway EnergyCWENshares were up 1.92% for the day, having made a 52-week high of $23.58.",
+          "Thor IndustriesTHOshares set a new 52-week high of $103.99 on Friday, moving down 1.07%.",
+          "Descartes Systems GrDSGXshares reached a new 52-week high of $50.07 on Friday morning, moving up 1.67%.",
+          "BrunswickBCstock hit a yearly high price of $67.33. The stock was up 2.06% for the day.",
+          "AppFolioAPPFshares set a new 52-week high of $177.50 on Friday, moving up 3.67%.",
+          "Vertiv HoldingsVRTshares set a new 52-week high of $14.42 on Friday, moving up 3.82%.",
+          "Simpson Manufacturing CoSSDshares hit $93.49 on Friday morning, setting a new 52-week high for a change of up 4.9%.",
+          "TopBuildBLDshares hit a yearly high of $128.51. The stock traded up 5.04% on the session.",
+          "II-VIIIVIstock set a new 52-week high of $50.38 Friday morning. Over the session, the stock traded up 3.69%.",
+          "Power IntegrationsPOWIstock hit a yearly high price of $120.52. The stock was up 3.28% for the day.",
+          "Lattice SemiconductorLSCCstock hit a yearly high price of $28.26. The stock was up 2.81% for the day.",
+          "Biohaven PharmaceuticalBHVNshares broke to $69.54 on Friday, setting a new 52-week high with a change of up 2.61%.",
+          "Kinsale Capital GroupKNSLshares broke to a new 52-week high of $159.98 on Friday. Shares of the company traded up 2.79%.",
+          "SaiaSAIAstock made a new 52-week high of $119.29 Friday. The stock was up 2.36% for the day.",
+          "Alarm.com HoldingsALRMstock on Friday broke to a yearly high of $57.46. Shares traded up 2.66%.",
+          "LCI IndusLCIIshares were up 5.2% for the day, having made a 52-week high of $116.70.",
+          "Penn National GamingPENNshares hit a new 52-week high of $40.14. The stock traded up 2.44% on the session.",
+          "RedfinRDFNstock set a new 52-week high of $37.24 Friday morning. Over the session, a stock traded up 7.92%.",
+          "MACOM TechnologyMTSIshares were up 3.18% for the day, having made a 52-week high of $34.66.",
+          "Goosehead InsuranceGSHDshares hit a new 52-week high of $72.75. The stock traded up 4.83% on the session.",
+          "Acushnet HoldingsGOLFshares hit $37.12 on Friday morning, setting a new 52-week high for a change of up 2.47%.",
+          "Fox Factory HldgFOXFshares set a new yearly high of $87.98 this morning. The stock was up 8.47% on the session.",
+          "PJT PartnersPJTshares set a new 52-week high of $57.87 on Friday, moving up 2.87%.",
+          "Staar SurgicalSTAAstock on Friday broke to a yearly high of $44.87. Shares traded up 2.85%.",
+          "APi GrAPGstock on Friday broke to a yearly high of $13.00. Shares traded up 1.17%.",
+          "Ligand PharmaceuticalsLGNDshares were up 2.86% on Friday to hit a new 52-week high of $124.97 for a change of up 2.86%.",
+          "Winnebago IndustriesWGOstock set a new 52-week high of $65.80 Friday morning. Over the session, the stock traded up 2.02%.",
+          "Palomar HldgsPLMRshares were up 4.65% for the day, having made a 52-week high of $87.07.",
+          "AeroVironmentAVAVstock set a new 52-week high of $79.37 Friday morning. Over the session, the stock traded up 2.2%.",
+          "Formula Systems (1985)FORTYshares reached a new 52-week high of $81.06 on Friday morning, moving up 1.58%.",
+          "Office DepotODPshares set a new yearly high of $2.88 this morning. The stock was up 5.76% on the session.",
+          "Astec IndustriesASTEshares hit a yearly high of $47.48. The stock traded up 3.82% on the session.",
+          "Atlas Air Worldwide HldgsAAWWshares broke to a new 52-week high of $47.70 on Friday. Shares of the company traded up 0.39%.",
+          "Sprout SocialSPTshares were up 2.36% on Friday morning to hit a new 52-week high of $32.24.",
+          "Freedom HoldingFRHCstock set a new 52-week high of $18.50 Friday morning. Over the session, the stock traded up 3.56%.",
+          "Camping World HoldingsCWHstock set a new 52-week high of $24.89 Friday morning. Over the session, the stock traded up 1.59%.",
+          "BlackRock ScienceBSTstock on Friday broke to a yearly high of $36.74. Shares traded up 0.86%.",
+          "INTL FCStoneINTLshares set a new yearly high of $55.17 this morning. The stock was up 3.94% on the session.",
+          "ChampionXCHXshares hit a yearly high of $12.53. The stock traded up 9.15% on the session.",
+          "Malibu BoatsMBUUshares hit $56.80 on Friday morning, setting a new 52-week high for a change of up 0.37%.",
+          "Replimune GroupREPLshares hit a new 52-week high of $24.00. The stock traded down 1.4% on the session.",
+          "CEVACEVAstock hit a yearly high price of $37.95. The stock was up 2.21% for the day.",
+          "CalixCALXshares broke to $14.90 on Friday, setting a new 52-week high with a change of up 4.18%.",
+          "Niu TechnologiesNIUshares set a new yearly high of $12.38 this morning. The stock was up 3.46% on the session.",
+          "eXp World HoldingsEXPIshares broke to $12.26 on Friday, setting a new 52-week high with a change of down 0.46%.",
+          "nLightLASRshares broke to $26.48 on Friday, setting a new 52-week high with a change of up 7.29%.",
+          "Collier Creek HldgsCCHstock set a new 52-week high of $12.41 Friday morning. Over the session, the stock traded up 11.55%.",
+          "Digital TurbineAPPSshares hit a yearly high of $9.41. The stock traded up 3.24% on the session.",
+          "American SoftwareAMSWAshares hit a new 52-week high of $21.38. The stock traded up 1.44% on the session.",
+          "FutureFuelFFstock hit a yearly high price of $14.45. The stock was up 3.01% for the day.",
+          "VapothermVAPOshares reached a new 52-week high of $31.80 on Friday morning, moving up 3.58%.",
+          "Clearwater PaperCLWstock on Friday broke to a yearly high of $33.63. Shares traded up 0.58%.",
+          "Resources ConnectionRGPstock set a new 52-week high of $12.26 Friday morning. Over the session, the stock traded up 3.65%.",
+          "Tekla World HealthcareTHWshares broke to a new 52-week high of $14.73 on Friday. Shares of the company traded up 1.1%.",
+          "Farmland PartnersFPIshares broke to $7.47 on Friday, setting a new 52-week high with a change of up 0.27%.",
+          "Gladstone LandLANDshares were up 2.37% on Friday morning to hit a new 52-week high of $15.67.",
+          "Sportsman's WarehouseSPWHstock on Friday broke to a yearly high of $13.74. Shares traded up 7.96%.",
+          "Aeglea BioTherapeuticsAGLEshares were up 4.03% on Friday to hit a new 52-week high of $9.65 for a change of up 4.03%.",
+          "Tuscan HoldingsTHCAshares hit a new 52-week high of $10.31.",
+          "ARYA Sciences AcquisitionARYAshares were up 3.54% on Friday morning to hit a new 52-week high of $14.50.",
+          "Mastech DigitalMHHshares were up 5.9% on Friday to hit a new 52-week high of $21.08 for a change of up 5.9%.",
+          "OneWater MarineONEWshares broke to $19.39 on Friday, setting a new 52-week high with a change of up 3.92%.",
+          "Tortoise Midstream EnergyNTGshares reached a new 52-week high of $23.22 on Friday morning, moving up 6.15%.",
+          "Fennec PharmaceuticalsFENCshares hit $8.65 on Friday morning, setting a new 52-week high for a change of up 10.56%.",
+          "Acacia ResearchACTGshares hit a yearly high of $3.70. The stock traded up 4.08% on the session.",
+          "Nabors IndustriesNBRshares set a new 52-week high of $53.53 on Friday, moving up 20.17%.",
+          "THL Credit Senior LoanFSLFshares set a new yearly high of $12.71 this morning. The stock was up 1.48% on the session.",
+          "AtomeraATOMshares were up 4.17% for the day, having made a 52-week high of $9.84.",
+          "GoldfieldGVshares were up 2.28% for the day, having made a 52-week high of $4.15.",
+          "MTBCMTBCshares were up 2.04% for the day, having made a 52-week high of $7.79.",
+          "Wayside Technology GroupWSTGshares reached a new 52-week high of $24.50 on Friday morning, moving up 0.97%.",
+          "Dynagas LNG PartnersDLNGstock set a new 52-week high of $2.63 Friday morning. Over the session, the stock traded up 22.16%.",
+          "FTS InternationalFTSIshares broke to $8.96 on Friday, setting a new 52-week high with a change of up 14.46%.",
+          "Tortoise PipelineTTPshares hit a yearly high of $18.66. The stock traded up 4.29% on the session.",
+          "US Global InvestorsGROWshares hit a new 52-week high of $2.96. The stock traded up 9.85% on the session.",
+          "Tortoise EnergyNDPshares broke to $13.85 on Friday, setting a new 52-week high with a change of up 6.34%.",
+          "Ekso Bionics HoldingsEKSOshares set a new yearly high of $5.24 this morning. The stock was down 1.07% on the session.",
+          "Energy FocusEFOIstock set a new 52-week high of $1.21 Friday morning. Over the session, the stock traded up 2.14%."
+        ],
+        "stock_history": {
+          "stock": [
+            "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A", "A"
+          ],
+          "Date": [
+            "2020-06-05", "2020-06-03", "2020-05-26", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-21", "2020-05-21", "2020-05-21", "2020-05-21", "2020-05-18", "2020-05-15", "2020-05-08", "2020-05-05", "2020-05-01", "2020-04-28", "2020-04-23", "2020-04-22", "2020-04-14", "2020-04-08", "2020-04-06", "2020-04-02", "2020-04-01", "2020-03-31"
+          ],
+          "Open": [
+            92.12999725341795, 90.6500015258789, 86.2300033569336, 85.0, 85.0, 85.0, 85.0, 85.0, 85.0, 85.0, 85.0, 85.0, 81.72000122070312, 81.72000122070312, 81.72000122070312, 81.72000122070312, 83.23999786376953, 81.51000213623047, 79.66999816894531, 74.91000366210938, 75.55000305175781, 77.0, 76.5999984741211, 74.75, 77.30000305175781, 74.16999816894531, 72.97000122070312, 68.2699966430664, 69.47000122070312, 72.33999633789062
+          ],
+          "Close": [
+            90.37999725341795, 90.48999786376952, 86.12999725341797, 84.9800033569336, 84.9800033569336, 84.9800033569336, 84.9800033569336, 84.9800033569336, 84.9800033569336, 84.9800033569336, 84.9800033569336, 84.9800033569336, 80.75, 80.75, 80.75, 80.75, 83.66000366210938, 81.58999633789062, 79.70999908447266, 76.37000274658203, 74.20999908447266, 75.44999694824219, 75.08999633789062, 75.16999816894531, 78.83000183105469, 76.69000244140625, 74.36000061035156, 72.29000091552734, 68.91999816894531, 71.62000274658203
+          ],
+          "High": [
+            93.04000091552734, 91.13999938964844, 86.79000091552734, 87.66999816894531, 87.66999816894531, 87.66999816894531, 87.66999816894531, 87.66999816894531, 87.66999816894531, 87.66999816894531, 87.66999816894531, 87.66999816894531, 82.19000244140625, 82.19000244140625, 82.19000244140625, 82.19000244140625, 84.38999938964844, 82.83000183105469, 80.33000183105469, 77.58000183105469, 76.0999984741211, 77.0, 77.48999786376953, 75.58000183105469, 79.19999694824219, 77.16999816894531, 74.98999786376953, 72.44999694824219, 70.2300033569336, 72.80000305175781
+          ],
+          "Low": [
+            90.08999633789062, 90.26000213623048, 85.63999938964844, 84.19999694824219, 84.19999694824219, 84.19999694824219, 84.19999694824219, 84.19999694824219, 84.19999694824219, 84.19999694824219, 84.19999694824219, 84.19999694824219, 80.45999908447266, 80.45999908447266, 80.45999908447266, 80.45999908447266, 82.29000091552734, 81.22000122070312, 79.19000244140625, 74.83000183105469, 73.56999969482422, 75.33999633789062, 75.05000305175781, 73.77999877929688, 77.23999786376953, 72.75, 72.25, 68.13999938964844, 68.1500015258789, 70.5
+          ],
+          "Volume": [
+            2844700, 1382500, 3173400, 5063100, 5063100, 5063100, 5063100, 5063100, 5063100, 5063100, 5063100, 5063100, 2576500, 2576500, 2576500, 2576500, 2076000, 4529400, 2255000, 1476100, 1618600, 1855900, 2097700, 2347400, 2650300, 2703000, 2312000, 1840300, 2173600, 1822100
+          ]
+        },
+        "market_history": {
+          "m_Symbol": [
+            "^GSPC", "^DJI", "^GSPC", "^GSPC", "^DJI", "^DJI", "^DJI", "^DJI", "^DJI", "^DJI", "^GSPC", "^DJI", "^DJI", "^DJI", "^DJI", "^DJI", "^DJI", "^DJI", "^GSPC", "^DJI", "^DJI", "^DJI", "^DJI", "^DJI", "^DJI", "^GSPC", "^DJI", "^DJI", "^DJI", "^GSPC"
+          ],
+          "Date": [
+            "2020-06-05", "2020-06-03", "2020-05-26", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-22", "2020-05-21", "2020-05-21", "2020-05-21", "2020-05-21", "2020-05-18", "2020-05-15", "2020-05-08", "2020-05-05", "2020-05-01", "2020-04-28", "2020-04-23", "2020-04-22", "2020-04-14", "2020-04-08", "2020-04-06", "2020-04-02", "2020-04-01", "2020-03-31"
+          ],
+          "Open": [
+            3163.840087890625, 24107.8203125, 3213.320068359375, 3163.840087890625, 26836.80078125, 26836.80078125, 26836.80078125, 26836.80078125, 26836.80078125, 27251.890625, 3163.840087890625, 26836.80078125, 26836.80078125, 26836.80078125, 26836.80078125, 24564.26953125, 26836.80078125, 26836.80078125, 3213.419921875, 24107.8203125, 27232.9296875, 26836.80078125, 26836.80078125, 26836.80078125, 26836.80078125, 2782.4599609375, 24107.8203125, 26836.80078125, 24107.8203125, 3213.419921875
+          ],
+          "Close": [
+            3193.929931640625, 24331.3203125, 3207.179931640625, 3193.929931640625, 27110.98046875, 27110.98046875, 27110.98046875, 27110.98046875, 27110.98046875, 26989.990234375, 3193.929931640625, 27110.98046875, 27110.98046875, 27110.98046875, 27110.98046875, 24474.119140625, 27110.98046875, 27110.98046875, 3190.139892578125, 24331.3203125, 27572.439453125, 27110.98046875, 27110.98046875, 27110.98046875, 27110.98046875, 2761.6298828125, 24331.3203125, 27110.98046875, 24331.3203125, 3190.139892578125
+          ],
+          "High": [
+            3211.719970703125, 24349.900390625, 3222.7099609375, 3211.719970703125, 27338.30078125, 27338.30078125, 27338.30078125, 27338.30078125, 27338.30078125, 27355.220703125, 3211.719970703125, 27338.30078125, 27338.30078125, 27338.30078125, 27338.30078125, 24718.4609375, 27338.30078125, 27338.30078125, 3223.27001953125, 24349.900390625, 27580.2109375, 27338.30078125, 27338.30078125, 27338.30078125, 27338.30078125, 2782.4599609375, 24349.900390625, 27338.30078125, 24349.900390625, 3223.27001953125
+          ],
+          "Low": [
+            3163.840087890625, 24107.05078125, 3193.110107421875, 3163.840087890625, 26836.80078125, 26836.80078125, 26836.80078125, 26836.80078125, 26836.80078125, 26938.05078125, 3163.840087890625, 26836.80078125, 26836.80078125, 26836.80078125, 26836.80078125, 24370.880859375, 26836.80078125, 26836.80078125, 3181.489990234375, 24107.05078125, 27232.48046875, 26836.80078125, 26836.80078125, 26836.80078125, 26836.80078125, 2721.169921875, 24107.05078125, 26836.80078125, 24107.05078125, 3181.489990234375
+          ]
+        },
+        "income_statement": {
+          "Total Revenue": [],
+          "Normalized Income": []
+        },
+        "info": {
+          "priceToBook": []
+        }
+      }
+    }
+  }
+}
